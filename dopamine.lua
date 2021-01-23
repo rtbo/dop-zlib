@@ -1,22 +1,40 @@
 local dop = require('dop')
 
-name = "zlib"
-version = "1.2.11"
+name = 'zlib'
+version = '1.2.11'
 description =
-    "A Massively Spiffy Yet Delicately Unobtrusive Compression Library"
-authors = {"Jean-loup Gailly", "Mark Adler"}
-license = "MIT"
-copyright = "Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler"
-langs = { "c" }
+    'A Massively Spiffy Yet Delicately Unobtrusive Compression Library'
+authors = {'Jean-loup Gailly', 'Mark Adler'}
+license = 'MIT'
+copyright = 'Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler'
+langs = {'c'}
 
-repo = dop.Git {
-    url = "https://github.com/rtbo/dop-zlib.git",
-    revId = "v"..version,
-}
+revision = dop.Git.revision()
 
-source = dop.Archive {
-    url = "https://zlib.net/zlib-"..version..".tar.gz",
-    sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
-}
+function source()
+    local folder = 'zlib-' .. version
+    local archive = folder .. '.tar.gz'
 
-build = dop.CMake {}
+    dop.download {url = 'https://zlib.net/' .. archive, dest = archive}
+    dop.checksum {archive, sha1 = 'e6d119755acdf9104d7ba236b1242696940ed6dd'}
+    dop.extract_archive {archive = archive, outdir = '.'}
+
+    return folder
+end
+
+function build(dirs, profile)
+    local cmake = dop.CMake:new(profile)
+
+    dop.from_dir(dirs.src, function()
+        local build = dop.path('build', profile.digest_hash)
+        dop.mkdir {build, recurse = true}
+        dop.from_dir(build, function()
+            cmake:configure{
+                src_dir = dop.path('..', '..'),
+                install_dir = dirs.install,
+            }
+            cmake:build()
+            cmake:install()
+        end)
+    end)
+end
