@@ -25,16 +25,18 @@ end
 function build(dirs, profile)
     local cmake = dop.CMake:new(profile)
 
-    dop.from_dir(dirs.src, function()
-        local build = dop.path('build', profile.digest_hash)
-        dop.mkdir {build, recurse = true}
-        dop.from_dir(build, function()
-            cmake:configure{
-                src_dir = dop.path('..', '..'),
-                install_dir = dirs.install,
-            }
-            cmake:build()
-            cmake:install()
-        end)
+    local build = dop.path('build', profile.digest_hash)
+    local install = dop.path('install', profile.digest_hash)
+    dop.mkdir {build, recurse = true}
+
+    dop.from_dir(build, function()
+        cmake:configure{
+            src_dir = dop.path('..', '..', dirs.src),
+            install_dir = dop.path('..', '..', install)
+        }
+        cmake:build()
+        cmake:install()
     end)
+
+    return install
 end
