@@ -1,5 +1,3 @@
 .dop/
 zlib-1.2.11/
 zlib-1.2.11.tar.gz
-build/
-install/
