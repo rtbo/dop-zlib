@@ -1,9 +1,9 @@
 name = 'zlib'
-version = '1.2.11'
+version = '1.2.12'
 description = 'A Massively Spiffy Yet Delicately Unobtrusive Compression Library'
 authors = {'Jean-loup Gailly', 'Mark Adler'}
 license = 'MIT'
-copyright = 'Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler'
+copyright = 'Copyright (C) 1995-2022 Jean-loup Gailly and Mark Adler'
 langs = {'c'}
 
 function source ()
@@ -12,7 +12,7 @@ function source ()
     local url = 'https://github.com/madler/zlib/archive/refs/tags/v' .. version .. '.tar.gz'
 
     dop.download { url, dest = archive }
-    dop.checksum { archive, sha1 = '56559d4c03beaedb0be1c7481d6a371e2458a496' }
+    dop.checksum { archive, sha1 = '09211da41528f4a7bc01890eeb0577af2bc0ec26' }
     dop.extract_archive { archive, outdir = '.' }
 
     return folder
